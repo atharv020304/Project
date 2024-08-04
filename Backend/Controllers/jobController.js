@@ -105,7 +105,42 @@ export const getAllJobs = asyncHandler(async(req,res,next) =>{
     })
 })
 
+export const getMyJobs = asyncHandler(async(req,res,next)=>{
+    const myJob = await Job.find({postedBy: req.user._id});
+    res.status(200).json({
+        success: true,
+        myJob
+    })
+});
 
+
+export const deleteJob = asyncHandler(async(req,res,next)=>{
+   const {id} = req.params;
+   const job = await Job.findById(id);
+
+   if(!job){
+    return next(new errHandler(404,"Job not Found"))
+   }
+
+   await job.deleteOne();
+   res.status(200).json({
+    success: true,
+    message: "job deleted"
+   })
+
+})
+
+export const getSinglejob = asyncHandler(async(req,res,next) => {
+    const {id} = req.params;
+    const job = await Job.findById(id);
+    if(!job){
+        return next(new errHandler(404,"Job not found"));
+    }
+    res.status(200).json({
+        success: true,
+        job,
+    })
+})
 
 
 
